@@ -1,12 +1,29 @@
+{% extends 'base.html'%}
+{% block content %}
 <form action="{% url 'polls:vote' question.id %}" method="post">
     {% csrf_token %}
-    <fieldset>
-        <legend><h1>{{ question.question_text }}</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <div class="shadow-lg p-5 my-3">
+        <h1 class="card-title">{{ question.question_text }}</h1>
+
+        {% if error_message %}
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                <use xlink:href="#exclamation-triangle-fill"/>
+            </svg>
+            <div>
+                {{ error_message }}
+            </div>
+        </div>
+        {% endif %}
         {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+        <input class="form-check-input" type="radio" name="choice" id="choice{{ forloop.counter }}"
+               value="{{ choice.id }}">
+        {{ choice.choice_text }}
+        <label class="form-check-label" for="choice{{ forloop.counter }}"></label><br>
+        {% empty %}
+        <h1>Não existe de votação aqui.</h1>
         {% endfor %}
-    </fieldset>
-    <input type="submit" value="Vote">
+        <input class="btn btn-outline-primary my-5" type="submit" value="Votar">
+    </div>
 </form>
+{% endblock content %}
